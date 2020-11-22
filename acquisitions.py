@@ -7,7 +7,7 @@ import plotly.graph_objects as go
 import networkx as nx 
 
 acquisitions = pd.read_csv("data/acquisitions.csv")
-acquisitions = acquisitions.head(200)
+acquisitions = acquisitions.head(3000)
 
 G = nx.from_pandas_edgelist(acquisitions, "acquired_object_id", "acquiring_object_id",
 	["price_amount", "price_currency_code", "acquired_at"])
@@ -43,7 +43,7 @@ node_trace = go.Scatter(
 	marker = dict(
 		showscale = True,
 		colorscale = "YlOrRd",
-		reversescale = True,
+		reversescale = False,
 		color = [],
 		size = 10,
 		colorbar = dict(
@@ -52,6 +52,15 @@ node_trace = go.Scatter(
 			xanchor = "left",
 			titleside = "right"),
 	line_width = 2))
+
+node_adjacencies = []
+node_text = []
+for node, adjacencies in enumerate(G.adjacency()):
+    node_adjacencies.append(len(adjacencies[1]))
+    node_text.append('# of acquisitions: '+str(len(adjacencies[1])))
+
+node_trace.marker.color = node_adjacencies
+node_trace.text = node_text
 
 fig = go.Figure(data = [edge_trace, node_trace],
 		layout = go.Layout(
