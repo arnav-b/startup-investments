@@ -90,7 +90,7 @@ def get_company(df, object_id):
     row = row.reset_index()
     # When full df isn't loaded some rows will not be in the df
     if len(row) == 0:
-        print("row is empty df")
+        # print("row is empty df")
         return None
     return row_to_company(row)
 
@@ -114,23 +114,24 @@ def edge_hover_text(df, graph, edge):
         str(attrs["price_amount"]), attrs["price_currency_code"], attrs["acquired_at"])
     return text
 
+def graph_from_df(edgelist_df, node_df, source, target, attr=None):
+    """
+    Creates graph using edgelist_df. 
+    """
+    graph = nx.from_pandas_edgelist(edgelist_df, source, target, edge_attr=attr, create_using=nx.DiGraph)
+    graph = nx.relabel_nodes(graph, lambda node: get_company(node_df, node))
+    return graph 
+
 ##########################################################################
 # Testing
-
-def graph_from_df(df, source, target, attr=None):
-	"""
-	Creates graph using edgelist in df. 
-	"""
-	graph = nx.from_pandas_edgelist(df, source, target, edge_attr=attr, create_using=nx.DiGraph)
-    
-	return graph        
+##########################################################################
 
 acquisitions = pd.read_csv("data/acquisitions.csv", nrows=100)
-objects = pd.read_csv("data/objects.csv", nrows=3000)
-graph = graph_from_df(df=acquisitions, source="acquired_object_id", target="acquiring_object_id", 
+objects = pd.read_csv("data/objects.csv", nrows=6000)
+graph = graph_from_df(edgelist_df=acquisitions, node_df=objects, source="acquired_object_id", target="acquiring_object_id", 
     attr=["price_amount", "price_currency_code", "acquired_at"])
 
-print(graph.nodes)
+print(graph.edges)
 
 # for edge in list(graph.edges())[:10]:
 #     print(edge_hover_text(objects, graph, edge))
