@@ -118,7 +118,7 @@ def graph_from_edgelist(acquisitions, offices, state_code, source, target, attr=
 
 	acquisitions = filter_by_state(acquisitions, offices, state_code)
 
-	graph = nx.from_pandas_edgelist(acquisitions, source, target, edge_attr=attr, create_using=nx.DiGraph)
+	graph = nx.from_pandas_edgelist(acquisitions, source, target, edge_attr=attr)
 	graph = VisualGraph(graph)
 	graph.update_node_positions()
 
