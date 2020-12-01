@@ -1,9 +1,5 @@
 """
 Graph visualization of acquisitions.
-TODO: 
-	Color nodes based on whether acquired first, then by number of acquisitions
-	Add text: company name and category for nodes, data of acquisition/amount paid for edges
-	Show change over time, possibly with animated model
 """
 
 import pandas as pd 

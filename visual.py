@@ -1,17 +1,6 @@
 """
 More complex visualization of acquisitions.
 Testing on the first 500 rows.
-Final output: graph of company acquisitions with the following traits:
-    - Filterable by company category
-    - Edges labeled with date of acquisition, direction, and amount paid upon hover
-    - Nodes are companies, labeled with company name, location, and date of creation
-    - Nodes colored as follows: blue if acquired at any point, otherwise colored on red-yellow scale by number of acquisitions
-Subproblems:
-    - Match company IDs to companies (in separate files)
-    - How to get edge labels
-    - Label nodes
-    - Custom node coloring
-    - Graph filtering
 """
 
 import pandas as pd 
