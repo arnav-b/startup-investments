@@ -98,7 +98,12 @@ class VisualGraph(nx.DiGraph):
 
 		return fig
 
-def graph_from_edgelist(filename, numrows, source, target, attr=None):
+def filter_by_state(acquisitions, offices, state_code):
+	state_offices = offices[offices.state_code == state_code].object_id
+	acquisitions = acquisitions.dropna()
+	return acquisitions[acquisitions.acquiring_object_id.isin(state_offices)]
+
+def graph_from_edgelist(acquisitions, offices, state_code, source, target, attr=None):
 	"""
 	Creates graph using edgelist stored as .csv at filename.
 	
@@ -108,10 +113,12 @@ def graph_from_edgelist(filename, numrows, source, target, attr=None):
 	target: valid column name for acquired node
 	attr: list of valid column names to be added as edge attributes 
 	"""
-	df = pd.read_csv(filename)
-	df = df.head(100)
+	acquisitions = pd.read_csv(acquisitions)
+	offices = pd.read_csv(offices)
 
-	graph = nx.from_pandas_edgelist(df, source, target, edge_attr=attr, create_using=nx.DiGraph)
+	acquisitions = filter_by_state(acquisitions, offices, state_code)
+
+	graph = nx.from_pandas_edgelist(acquisitions, source, target, edge_attr=attr, create_using=nx.DiGraph)
 	graph = VisualGraph(graph)
 	graph.update_node_positions()
 
@@ -120,7 +127,7 @@ def graph_from_edgelist(filename, numrows, source, target, attr=None):
 def main():
 	start_time = time.time()
 
-	graph = graph_from_edgelist(filename="data/acquisitions.csv", numrows=100, source="acquired_object_id", 
+	graph = graph_from_edgelist(acquisitions="data/acquisitions.csv", offices="data/offices.csv", state_code="CA", source="acquired_object_id", 
 	target="acquiring_object_id", attr=["price_amount", "price_currency_code", "acquired_at"])
 	fig = graph.get_fig("<br>Acquisitions")
 	fig.write_html("acquisitions.html")
