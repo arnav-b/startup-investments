@@ -6,7 +6,7 @@ Testing on the first 500 rows.
 import pandas as pd 
 import networkx as nx 
 import plotly.graph_objects as go 
-import acquisitions
+import time
 
 class Company:
     def __init__(self, object_id, name, category, status, founding_date, funding_total_usd):
@@ -18,7 +18,7 @@ class Company:
         self.funding_total_usd = funding_total_usd
 
     def __str__(self):
-        return self.name
+        return "<b> {} </b> \n Category: {} \n Total Funding: ${}".format(self.name, self.category, self.funding_total_usd)
 
     def get_object_id(self):
         return self.object_id
@@ -64,6 +64,11 @@ class Fund:
     def get_raised_currency_code(self):
         return self.raised_currency_code
 
+def filter_by_state(acquisitions, offices, state_code):
+	state_offices = offices[offices.state_code == state_code].object_id
+	acquisitions = acquisitions.dropna()
+	return acquisitions[acquisitions.acquiring_object_id.isin(state_offices)]
+
 def row_to_company(row):
     """
     Takes a 1-row DataFrame from objects row and returns a Company object correspoding to that row.
@@ -77,58 +82,153 @@ def get_company(df, object_id):
     """
     row = df[df["id"] == object_id]
     row = row.reset_index()
-    # When full df isn't loaded some rows will not be in the df
-    if len(row) == 0:
-        # print("row is empty df")
-        return None
     return row_to_company(row)
+        
+class VisualGraph(nx.Graph):
+    def update_node_positions(self):
+        """
+		Updates nodes attribute with key "pos" according to spring layout.
+		"""
+        pos_dict = nx.spring_layout(self)
+        for n, p in pos_dict.items():
+            self.nodes[n]["pos"] = p
+    
+    def edge_hover_text(self, edge):
+        """
+        Return text to show on hover for a given edge.
+            - df: DataFrame of company data, e.g. objects.csv
+            - G: nx.Graph object
+            - edge: ordered pair of object ids
+        """
+        source, target = edge
+        # print("source", source)
+        # print("target", target)
+        # print("-" * 100)
+        attrs = self.get_edge_data(source, target)
+        text = "{} acquired {} for {} {} on {}".format(target.get_name(), source.get_name(),
+            str(attrs["price_amount"]), attrs["price_currency_code"], attrs["acquired_at"])
+        return text
 
-def node_hover_text(node):
-    """
-    Return text to show on hover for a given node.
-    """
-    return "<b>" + node.get_name() + "</b>" + "\n" + "Category: " + node.get_category() + "\n" + "Total Funding: $" + \
-            str(node.get_funding_total_usd())
+    # def update_all_text(self, df):
+    #     """
+    #     Adds text attributes to all nodes and edges in G using object data from df. Returns None.
+    #     """
+    #     for node in self.nodes:
+    #         self.nodes[node]["text"] = str(node)
+    #     for edge in self.edges:
+    #         # print("Updating text for edge", edge)
+    #         self.edges[edge]["text"] = self.edge_hover_text(edge)
 
-def edge_hover_text(df, graph, edge):
-    """
-    Return text to show on hover for a given edge.
-        - df: DataFrame of company data
-        - graph: nx.Graph object
-        - edge: ordered pair of object ids
-    """
-    source, target = edge
-    attrs = graph.get_edge_data(source, target)
-    text = "{} acquired {} for {} {} on {}".format(get_company(df, target).get_name(), get_company(df, source).get_name(),
-        str(attrs["price_amount"]), attrs["price_currency_code"], attrs["acquired_at"])
-    return text
+    def edge_trace(self, line_width=0.5, line_color="#888"):
+        edge_x, edge_y = [], []
+        edge_text = []
+        for edge in self.edges():
+            print("Adding text for edge", self.edge_hover_text(edge))
+            edge_text.append(self.edge_hover_text(edge))
+            x0, y0 = self.nodes[edge[0]]["pos"]
+            x1, y1 = self.nodes[edge[1]]["pos"]
+            edge_x.extend([x0, x1, None])
+            edge_y.extend([y0, y1, None])
+        
+        edge_trace = go.Scatter(
+			x = edge_x, 
+			y = edge_y, 
+			line = dict(width = line_width, color = line_color),
+			hoverinfo = "text",
+			mode = "lines")
+        
+        edge_trace.text = edge_text
+
+        return edge_trace
+	
+    def node_trace(self):
+		# Define positions for nodes
+        node_x, node_y = [], []
+        for node in self.nodes():
+            x, y = self.nodes[node]["pos"]
+            node_x.append(x)
+            node_y.append(y)
+		
+		# Create scatter object
+        node_trace = go.Scatter(
+            x = node_x, y = node_y,
+			mode = "markers",
+			hoverinfo = "text",
+			marker = dict(
+				showscale = True,
+				colorscale = "YlOrRd",
+				reversescale = False,
+				color = [],
+				size = 10,
+				colorbar = dict(
+					thickness = 15,
+					title = "Number of Acquisitions",
+					xanchor = "left",
+					titleside = "right"),
+			line_width = 2))
+		
+		# Color nodes by number of acquisitions and add text
+        node_adjacencies = []
+        node_text = []
+        for node, adjacencies in enumerate(self.adjacency()):
+            node_adjacencies.append(len(adjacencies[1]))
+            print("Adding text for node", str(node))
+            node_text.append(str(node) + "\n" + "# of acquisitions: " + str(len(adjacencies[1])))
+
+        node_trace.marker.color = node_adjacencies
+        node_trace.text = node_text
+        
+        return node_trace
+    
+    def get_fig(self, fig_title):
+        """
+        Create plotly Figure object titled with string fig_title.
+        """
+        fig = go.Figure(data = [self.edge_trace(), self.node_trace()],
+			layout = go.Layout(
+				title = fig_title,
+				titlefont_size = 16,
+				showlegend = False,
+				hovermode = "closest",
+				margin = dict(b=20, l=5, r=5, t=40),
+				xaxis=dict(showgrid=False, zeroline=False, showticklabels=False),
+				yaxis=dict(showgrid=False, zeroline=False, showticklabels=False))
+				)
+                
+        return fig
 
 def graph_from_df(edgelist_df, node_df, source, target, attr=None):
     """
-    Creates graph using edgelist_df. 
+    Creates networkx Graph using edgelist_df. 
     """
-    graph = nx.from_pandas_edgelist(edgelist_df, source, target, edge_attr=attr, create_using=nx.DiGraph)
-    graph = nx.relabel_nodes(graph, lambda node: get_company(node_df, node))
-    return graph 
+    G = nx.from_pandas_edgelist(edgelist_df, source, target, edge_attr=attr, create_using=nx.DiGraph)
+    G = nx.relabel_nodes(G, lambda node: get_company(node_df, node))
+    G = VisualGraph(G)
+    G.update_node_positions()
+    return G
 
 ##########################################################################
 # Testing
 ##########################################################################
 
-acquisitions = pd.read_csv("data/acquisitions.csv", nrows=100)
-objects = pd.read_csv("data/objects.csv", nrows=6000)
-graph = graph_from_df(edgelist_df=acquisitions, node_df=objects, source="acquired_object_id", target="acquiring_object_id", 
-    attr=["price_amount", "price_currency_code", "acquired_at"])
+def main():
+    start = time.time()
 
-print(graph.edges)
+    print("Reading acquisitions.csv and offices.csv")
+    acquisitions = pd.read_csv("data/acquisitions.csv")
+    offices = pd.read_csv("data/offices.csv")
 
-# for edge in list(graph.edges())[:10]:
-#     print(edge_hover_text(objects, graph, edge))
-# edge = ("c:10", "c:11")
-# print(acquisitions.columns)
-# row = objects[objects.id == "c:11"]
-# print(row)
-# print(row.loc[0, "category_code"])
-# print(get_company(objects, "c:11"))
-# print(edge_hover_text(objects, graph, edge))
-# print(get_company(df, "c:1"))
+    print("Filtering acquisitions and loading objects.csv")
+    acquisitions = filter_by_state(acquisitions, offices, "WA")
+    objects = pd.read_csv("data/objects.csv", low_memory=False)
+    
+    print("Creating graph")
+    G = graph_from_df(edgelist_df=acquisitions, node_df=objects, source="acquired_object_id", 
+		target="acquiring_object_id", attr=["price_amount", "price_currency_code", "acquired_at"])
+
+    fig = G.get_fig("<br>Acquisitions for Washington State-Based Companies")
+    fig.write_html("WA_acquisitions2.html")
+
+    print("Execution time:", str(time.time() - start), "seconds")
+
+main()

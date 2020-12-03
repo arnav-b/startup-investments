@@ -69,6 +69,7 @@ class VisualGraph(nx.DiGraph):
 		node_adjacencies = []
 		node_text = []
 		for node, adjacencies in enumerate(self.adjacency()):
+			node_text.append(str(node))
 			node_adjacencies.append(len(adjacencies[1]))
 			node_text.append("# of acquisitions: " + str(len(adjacencies[1])))
 
@@ -99,34 +100,28 @@ def filter_by_state(acquisitions, offices, state_code):
 	acquisitions = acquisitions.dropna()
 	return acquisitions[acquisitions.acquiring_object_id.isin(state_offices)]
 
-def graph_from_edgelist(acquisitions, offices, state_code, source, target, attr=None):
+def graph_from_edgelist(df, source, target, attr=None):
 	"""
 	Creates graph using edgelist stored as .csv at filename.
-	
-	filename: string, path to file
-	numrows: int, number of rows to read
-	source: valid column name for source node
-	target: valid column name for acquired node
-	attr: list of valid column names to be added as edge attributes 
 	"""
-	acquisitions = pd.read_csv(acquisitions)
-	offices = pd.read_csv(offices)
 
-	acquisitions = filter_by_state(acquisitions, offices, state_code)
+	G = nx.from_pandas_edgelist(df, source, target, edge_attr=attr)
+	G = VisualGraph(G)
+	G.update_node_positions()
 
-	graph = nx.from_pandas_edgelist(acquisitions, source, target, edge_attr=attr)
-	graph = VisualGraph(graph)
-	graph.update_node_positions()
-
-	return graph
+	return G
 
 def main():
 	start_time = time.time()
+	
+	acquisitions = pd.read_csv("data/acquisitions.csv")
+	offices = pd.read_csv("data/offices.csv")
+	acquisitions = filter_by_state(acquisitions, offices, "NY")
 
-	graph = graph_from_edgelist(acquisitions="data/acquisitions.csv", offices="data/offices.csv", state_code="CA", source="acquired_object_id", 
-	target="acquiring_object_id", attr=["price_amount", "price_currency_code", "acquired_at"])
-	fig = graph.get_fig("<br>Acquisitions")
-	fig.write_html("acquisitions.html")
+	G = graph_from_edgelist(df=acquisitions, source="acquired_object_id", target="acquiring_object_id", 
+		attr=["price_amount", "price_currency_code", "acquired_at"])
+	fig = G.get_fig("<br>Acquisitions")
+	fig.write_html("NY_acquisitions.html")
 
 	print("Execution time:", str(time.time() - start_time), "seconds")
 
