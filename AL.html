@@ -1,0 +1,124 @@
+
+<!-- saved from url=(0049)file:///C:/Users/ejsal/DEEP/investments/test.html -->
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=windows-1252">
+<link rel="stylesheet" href="./AL_files/vis.css" type="text/css">
+<script type="text/javascript" src="./AL_files/vis-network.min.js.download"> </script>
+</head><body><center>
+<h1 style="font-family: monospace">AL Companies and Funds</h1>
+</center>
+
+<!-- <link rel="stylesheet" href="../node_modules/vis/dist/vis.min.css" type="text/css" />
+<script type="text/javascript" src="../node_modules/vis/dist/vis.js"> </script>-->
+
+<style type="text/css">
+
+        #mynetwork {
+            width: 1000px;
+            height: 1000px;
+            background-color: #C5D1D8;
+            border: 1px solid lightgray;
+            position: relative;
+            float: left;
+        }
+
+        
+
+        
+        #config {
+            float: left;
+            width: 400px;
+            height: 600px;
+        }
+        
+
+        
+</style>
+
+
+
+
+<div id="mynetwork"><div class="vis-network" tabindex="900" style="position: relative; overflow: hidden; touch-action: pan-y; user-select: none; -webkit-user-drag: none; -webkit-tap-highlight-color: rgba(0, 0, 0, 0); width: 100%; height: 100%;"><canvas width="1500" height="1500" style="position: relative; touch-action: none; user-select: none; -webkit-user-drag: none; -webkit-tap-highlight-color: rgba(0, 0, 0, 0); width: 100%; height: 100%;"></canvas><div class="vis-network-tooltip" style="left: 565px; top: 155px; visibility: hidden;">c:271</div></div></div>
+
+
+<div id="config"><div class="vis-configuration-wrapper"><div class="vis-configuration vis-config-item vis-config-s0"></div><div class="vis-configuration vis-config-item vis-config-s0"><div class="vis-configuration vis-config-header">physics</div></div><div class="vis-configuration vis-config-item vis-config-s2"><div class="vis-configuration vis-config-label vis-config-s2">enabled:</div><input type="checkbox" class="vis-configuration vis-config-checkbox"></div><div class="vis-configuration vis-config-item vis-config-s2"><div class="vis-configuration vis-config-label vis-config-s2"><i><b>barnesHut:</b></i></div></div><div class="vis-configuration vis-config-item vis-config-s3"><div class="vis-configuration vis-config-label vis-config-s3">gravitationalConstant:</div><input class="vis-configuration vis-config-range" type="range" min="-30000" max="0" step="50"><input class="vis-configuration vis-config-rangeinput"></div><div class="vis-configuration vis-config-item vis-config-s3"><div class="vis-configuration vis-config-label vis-config-s3">centralGravity:</div><input class="vis-configuration vis-config-range" type="range" min="0" max="10" step="0.05"><input class="vis-configuration vis-config-rangeinput"></div><div class="vis-configuration vis-config-item vis-config-s3"><div class="vis-configuration vis-config-label vis-config-s3">springLength:</div><input class="vis-configuration vis-config-range" type="range" min="0" max="500" step="5"><input class="vis-configuration vis-config-rangeinput"></div><div class="vis-configuration vis-config-item vis-config-s3"><div class="vis-configuration vis-config-label vis-config-s3">springConstant:</div><input class="vis-configuration vis-config-range" type="range" min="0" max="1.2" step="0.005"><input class="vis-configuration vis-config-rangeinput"></div><div class="vis-configuration vis-config-item vis-config-s3"><div class="vis-configuration vis-config-label vis-config-s3">damping:</div><input class="vis-configuration vis-config-range" type="range" min="0" max="1" step="0.01"><input class="vis-configuration vis-config-rangeinput"></div><div class="vis-configuration vis-config-item vis-config-s3"><div class="vis-configuration vis-config-label vis-config-s3">avoidOverlap:</div><input class="vis-configuration vis-config-range" type="range" min="0" max="1" step="0.01"><input class="vis-configuration vis-config-rangeinput"></div><div class="vis-configuration vis-config-item vis-config-s2"><div class="vis-configuration vis-config-label vis-config-s2">maxVelocity:</div><input class="vis-configuration vis-config-range" type="range" min="0" max="150" step="1"><input class="vis-configuration vis-config-rangeinput"></div><div class="vis-configuration vis-config-item vis-config-s2"><div class="vis-configuration vis-config-label vis-config-s2">minVelocity:</div><input class="vis-configuration vis-config-range" type="range" min="0.01" max="1" step="0.01"><input class="vis-configuration vis-config-rangeinput"></div><div class="vis-configuration vis-config-item vis-config-s2"><div class="vis-configuration vis-config-label vis-config-s2">solver:</div><select class="vis-configuration vis-config-select"><option value="barnesHut">barnesHut</option><option value="forceAtlas2Based">forceAtlas2Based</option><option value="repulsion">repulsion</option><option value="hierarchicalRepulsion">hierarchicalRepulsion</option></select></div><div class="vis-configuration vis-config-item vis-config-s2"><div class="vis-configuration vis-config-label vis-config-s2">timestep:</div><input class="vis-configuration vis-config-range" type="range" min="0.01" max="1" step="0.01"><input class="vis-configuration vis-config-rangeinput"></div><div class="vis-configuration vis-config-option-container"></div><div class="vis-configuration vis-config-button">generate options</div></div></div>
+
+<script type="text/javascript">
+
+    // initialize global variables.
+    var edges;
+    var nodes;
+    var network; 
+    var container;
+    var options, data;
+
+    
+    // This method is responsible for drawing the graph, returns the drawn network
+    function drawGraph() {
+        var container = document.getElementById('mynetwork');
+        
+        
+
+        // parsing and collecting nodes and edges from the python
+        nodes = new vis.DataSet([{"color": "#1074AB", "id": "c:271", "label": "c:271", "shape": "dot", "title": "c:271"}, {"color": "#1074AB", "id": "c:27941", "label": "c:27941", "shape": "dot", "title": "c:27941"}, {"color": "#1074AB", "id": "c:44238", "label": "c:44238", "shape": "dot", "title": "c:271"}, {"color": "#1074AB", "id": "c:23647", "label": "c:23647", "shape": "dot", "title": "c:271"}, {"color": "#1074AB", "id": "c:55045", "label": "c:55045", "shape": "dot", "title": "c:44238"}, {"color": "#1074AB", "id": "c:19060", "label": "c:19060", "shape": "dot", "title": "c:23647"}, {"color": "#1074AB", "id": "c:71863", "label": "c:71863", "shape": "dot", "title": "c:55045"}, {"color": "#1074AB", "id": "c:75100", "label": "c:75100", "shape": "dot", "title": "c:19060"}, {"color": "#1074AB", "id": "c:153852", "label": "c:153852", "shape": "dot", "title": "c:71863"}, {"color": "#1074AB", "id": "c:166707", "label": "c:166707", "shape": "dot", "title": "c:75100"}, {"color": "#1074AB", "id": "c:172159", "label": "c:172159", "shape": "dot", "title": "c:153852"}, {"color": "#1074AB", "id": "c:27255", "label": "c:27255", "shape": "dot", "title": "c:166707"}, {"color": "#1074AB", "id": "c:193530", "label": "c:193530", "shape": "dot", "title": "c:75100"}, {"color": "#1074AB", "id": "c:281425", "label": "c:281425", "shape": "dot", "title": "c:75100"}, {"color": "#1074AB", "id": "c:146333", "label": "c:146333", "shape": "dot", "title": "c:172159"}, {"color": "#1074AB", "id": "c:257", "label": "c:257", "shape": "dot", "title": "c:172159"}, {"id": "f:177", "label": "f:177", "shape": "dot"}, {"id": "f:2858", "label": "f:2858", "shape": "dot"}, {"id": "f:737", "label": "f:737", "shape": "dot"}, {"id": "f:952", "label": "f:952", "shape": "dot"}, {"id": "f:4816", "label": "f:4816", "shape": "dot"}, {"id": "f:286", "label": "f:286", "shape": "dot"}, {"id": "f:4602", "label": "f:4602", "shape": "dot"}, {"id": "f:6760", "label": "f:6760", "shape": "dot"}, {"id": "f:7200", "label": "f:7200", "shape": "dot"}, {"id": "f:32", "label": "f:32", "shape": "dot"}, {"id": "f:7722", "label": "f:7722", "shape": "dot"}, {"id": "f:6855", "label": "f:6855", "shape": "dot"}, {"id": "f:316", "label": "f:316", "shape": "dot"}, {"id": "f:4360", "label": "f:4360", "shape": "dot"}, {"id": "f:6052", "label": "f:6052", "shape": "dot"}, {"id": "f:725", "label": "f:725", "shape": "dot"}, {"id": "f:10710", "label": "f:10710", "shape": "dot"}, {"id": "f:10711", "label": "f:10711", "shape": "dot"}, {"id": "f:10841", "label": "f:10841", "shape": "dot"}, {"id": "f:1834", "label": "f:1834", "shape": "dot"}, {"id": "f:5535", "label": "f:5535", "shape": "dot"}, {"id": "c:146332", "label": "c:146332", "shape": "dot"}, {"id": "c:26555", "label": "c:26555", "shape": "dot"}, {"id": "p:48334", "label": "p:48334", "shape": "dot"}, {"id": "p:1983", "label": "p:1983", "shape": "dot"}, {"id": "p:93286", "label": "p:93286", "shape": "dot"}, {"id": "p:93287", "label": "p:93287", "shape": "dot"}, {"id": "p:93288", "label": "p:93288", "shape": "dot"}, {"id": "p:93289", "label": "p:93289", "shape": "dot"}, {"id": "p:37297", "label": "p:37297", "shape": "dot"}, {"id": "p:45950", "label": "p:45950", "shape": "dot"}, {"id": "p:5529", "label": "p:5529", "shape": "dot"}]);
+        edges = new vis.DataSet([{"from": "c:271", "to": "f:177"}, {"from": "c:27941", "to": "f:2858"}, {"from": "c:271", "to": "f:737"}, {"from": "c:271", "to": "f:952"}, {"from": "c:44238", "to": "f:4816"}, {"from": "c:23647", "to": "f:286"}, {"from": "c:55045", "to": "f:4602"}, {"from": "c:19060", "to": "f:6760"}, {"from": "c:71863", "to": "f:7200"}, {"from": "c:75100", "to": "f:32"}, {"from": "c:153852", "to": "f:7722"}, {"from": "c:166707", "to": "f:6855"}, {"from": "c:75100", "to": "f:316"}, {"from": "c:172159", "to": "f:4360"}, {"from": "c:172159", "to": "f:6052"}, {"from": "c:172159", "to": "f:725"}, {"from": "c:27255", "to": "f:10710"}, {"from": "c:27255", "to": "f:10711"}, {"from": "c:193530", "to": "f:10841"}, {"from": "c:281425", "to": "f:1834"}, {"from": "c:281425", "to": "f:725"}, {"from": "c:281425", "to": "f:5535"}, {"from": "c:146333", "to": "c:146332"}, {"from": "c:172159", "to": "c:26555"}, {"from": "c:271", "to": "p:48334"}, {"from": "c:257", "to": "p:1983"}, {"from": "c:75100", "to": "p:93286"}, {"from": "c:75100", "to": "p:93287"}, {"from": "c:75100", "to": "p:93288"}, {"from": "c:75100", "to": "p:93289"}, {"from": "c:75100", "to": "p:37297"}, {"from": "c:75100", "to": "p:45950"}, {"from": "c:75100", "to": "p:5529"}]);
+
+        // adding nodes and edges to the graph
+        data = {nodes: nodes, edges: edges};
+
+        var options = {
+    "configure": {
+        "enabled": true,
+        "filter": [
+            "physics"
+        ]
+    },
+    "edges": {
+        "color": {
+            "inherit": true
+        },
+        "smooth": {
+            "enabled": false,
+            "type": "continuous"
+        }
+    },
+    "interaction": {
+        "dragNodes": true,
+        "hideEdgesOnDrag": false,
+        "hideNodesOnDrag": false
+    },
+    "physics": {
+        "enabled": true,
+        "stabilization": {
+            "enabled": true,
+            "fit": true,
+            "iterations": 1000,
+            "onlyDynamicEdges": false,
+            "updateInterval": 50
+        }
+    }
+};
+        
+        
+
+        
+        // if this network requires displaying the configure window,
+        // put it in its div
+        options.configure["container"] = document.getElementById("config");
+        
+
+        network = new vis.Network(container, data, options);
+
+        
+
+
+        
+
+        return network;
+
+    }
+
+    drawGraph();
+
+</script>
+
+</body></html>
