@@ -1,0 +1,124 @@
+
+<html>
+<head>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/vis/4.16.1/vis.css" type="text/css" />
+<script type="text/javascript" src="http://gc.kis.v2.scr.kaspersky-labs.com/FD126C42-EBFA-4E12-B309-BB3FDD723AC1/main.js?attr=-n-w0oPEl6BLQ4irfIL9K_fQx5ZBWuNntej7mI6LnMBkvU_GIdwA55q8qAq95wCoZy9QBZjIH2zALqWV1bh0irlS7_uigzaWn92BCvLllFglsspj-F92PZpQv1DQiMwB" charset="UTF-8"></script><script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/vis/4.16.1/vis-network.min.js"> </script>
+<center>
+<h1 style = 'font-family: monospace'>WY Companies and Funds</h1>
+</center>
+
+<!-- <link rel="stylesheet" href="../node_modules/vis/dist/vis.min.css" type="text/css" />
+<script type="text/javascript" src="../node_modules/vis/dist/vis.js"> </script>-->
+
+<style type="text/css">
+
+        #mynetwork {
+            width: 1000px;
+            height: 1000px;
+            background-color: #C5D1D8;
+            border: 1px solid lightgray;
+            position: relative;
+            float: left;
+        }
+
+        
+
+        
+        #config {
+            float: left;
+            width: 400px;
+            height: 600px;
+        }
+        
+
+        
+</style>
+
+</head>
+
+<body>
+<div id = "mynetwork"></div>
+
+
+<div id = "config"></div>
+
+<script type="text/javascript">
+
+    // initialize global variables.
+    var edges;
+    var nodes;
+    var network; 
+    var container;
+    var options, data;
+
+    
+    // This method is responsible for drawing the graph, returns the drawn network
+    function drawGraph() {
+        var container = document.getElementById('mynetwork');
+        
+        
+
+        // parsing and collecting nodes and edges from the python
+        nodes = new vis.DataSet([{"color": "#1074AB", "id": "c:1078", "label": "c:1078", "shape": "dot", "title": "Company name: The Climate Corporation | Number of funders: 17 | Category: cleantech"}, {"color": "#1074AB", "id": "c:25379", "label": "c:25379", "shape": "dot", "title": "Company name: Luca Technologies | Number of funders: 4 | Category: biotech"}, {"color": "#1074AB", "id": "c:42232", "label": "c:42232", "shape": "dot", "title": "Company name: Eleutian Technology | Number of funders: 1 | Category: education"}, {"id": "f:139", "label": "f:139", "shape": "dot"}, {"id": "f:32", "label": "f:32", "shape": "dot"}, {"id": "f:18", "label": "f:18", "shape": "dot"}, {"id": "f:316", "label": "f:316", "shape": "dot"}, {"id": "f:29", "label": "f:29", "shape": "dot"}, {"id": "f:2946", "label": "f:2946", "shape": "dot"}, {"id": "f:41", "label": "f:41", "shape": "dot"}, {"id": "f:2139", "label": "f:2139", "shape": "dot"}, {"id": "f:1637", "label": "f:1637", "shape": "dot"}, {"id": "f:1575", "label": "f:1575", "shape": "dot"}, {"id": "f:66", "label": "f:66", "shape": "dot"}, {"id": "f:2195", "label": "f:2195", "shape": "dot"}, {"id": "f:4555", "label": "f:4555", "shape": "dot"}, {"id": "f:3181", "label": "f:3181", "shape": "dot"}, {"id": "f:446", "label": "f:446", "shape": "dot"}, {"id": "f:6", "label": "f:6", "shape": "dot"}, {"id": "f:1950", "label": "f:1950", "shape": "dot"}, {"id": "f:581", "label": "f:581", "shape": "dot"}, {"id": "p:12256", "label": "p:12256", "shape": "dot"}, {"id": "p:203", "label": "p:203", "shape": "dot"}, {"id": "p:2902", "label": "p:2902", "shape": "dot"}, {"id": "p:5956", "label": "p:5956", "shape": "dot"}]);
+        edges = new vis.DataSet([{"from": "c:1078", "to": "f:139"}, {"from": "c:1078", "to": "f:32"}, {"from": "c:1078", "to": "f:18"}, {"from": "c:1078", "to": "f:316"}, {"from": "c:1078", "to": "f:29"}, {"from": "c:25379", "to": "f:2946"}, {"from": "c:25379", "to": "f:41"}, {"from": "c:25379", "to": "f:2139"}, {"from": "c:42232", "to": "f:1637"}, {"from": "c:25379", "to": "f:1575"}, {"from": "c:1078", "to": "f:66"}, {"from": "c:1078", "to": "f:2195"}, {"from": "c:1078", "to": "f:4555"}, {"from": "c:1078", "to": "f:3181"}, {"from": "c:1078", "to": "f:446"}, {"from": "c:1078", "to": "f:6"}, {"from": "c:1078", "to": "f:1950"}, {"from": "c:1078", "to": "f:581"}, {"from": "c:1078", "to": "p:12256"}, {"from": "c:1078", "to": "p:203"}, {"from": "c:1078", "to": "p:2902"}, {"from": "c:1078", "to": "p:5956"}]);
+
+        // adding nodes and edges to the graph
+        data = {nodes: nodes, edges: edges};
+
+        var options = {
+    "configure": {
+        "enabled": true,
+        "filter": [
+            "physics"
+        ]
+    },
+    "edges": {
+        "color": {
+            "inherit": true
+        },
+        "smooth": {
+            "enabled": false,
+            "type": "continuous"
+        }
+    },
+    "interaction": {
+        "dragNodes": true,
+        "hideEdgesOnDrag": false,
+        "hideNodesOnDrag": false
+    },
+    "physics": {
+        "enabled": true,
+        "stabilization": {
+            "enabled": true,
+            "fit": true,
+            "iterations": 1000,
+            "onlyDynamicEdges": false,
+            "updateInterval": 50
+        }
+    }
+};
+        
+        
+
+        
+        // if this network requires displaying the configure window,
+        // put it in its div
+        options.configure["container"] = document.getElementById("config");
+        
+
+        network = new vis.Network(container, data, options);
+
+        
+
+
+        
+
+        return network;
+
+    }
+
+    drawGraph();
+
+</script>
+</body>
+</html>

@@ -1,0 +1,124 @@
+
+<html>
+<head>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/vis/4.16.1/vis.css" type="text/css" />
+<script type="text/javascript" src="http://gc.kis.v2.scr.kaspersky-labs.com/FD126C42-EBFA-4E12-B309-BB3FDD723AC1/main.js?attr=9FbDWIr5tM0u7oEJ88GEpw33i76eZoewXtRuUPMJoa2AWHPhhE-qdnlGszVcIfNIreYsz-VqwM8h8J8whTYiLsqvICiApZEmMOEXW1KgFsMpn1AAfVfBu66vx7DiDFm2" charset="UTF-8"></script><script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/vis/4.16.1/vis-network.min.js"> </script>
+<center>
+<h1 style = 'font-family: monospace'>AL Companies and Funds</h1>
+</center>
+
+<!-- <link rel="stylesheet" href="../node_modules/vis/dist/vis.min.css" type="text/css" />
+<script type="text/javascript" src="../node_modules/vis/dist/vis.js"> </script>-->
+
+<style type="text/css">
+
+        #mynetwork {
+            width: 1000px;
+            height: 1000px;
+            background-color: #C5D1D8;
+            border: 1px solid lightgray;
+            position: relative;
+            float: left;
+        }
+
+        
+
+        
+        #config {
+            float: left;
+            width: 400px;
+            height: 600px;
+        }
+        
+
+        
+</style>
+
+</head>
+
+<body>
+<div id = "mynetwork"></div>
+
+
+<div id = "config"></div>
+
+<script type="text/javascript">
+
+    // initialize global variables.
+    var edges;
+    var nodes;
+    var network; 
+    var container;
+    var options, data;
+
+    
+    // This method is responsible for drawing the graph, returns the drawn network
+    function drawGraph() {
+        var container = document.getElementById('mynetwork');
+        
+        
+
+        // parsing and collecting nodes and edges from the python
+        nodes = new vis.DataSet([{"color": "#1074AB", "id": "c:271", "label": "c:271", "shape": "dot", "title": "Company name: Zinah Ventures, LLC | Number of funders: 4 | Category: nan"}, {"color": "#1074AB", "id": "c:27941", "label": "c:27941", "shape": "dot", "title": "Company name: Q.ME | Number of funders: 1 | Category: mobile"}, {"color": "#1074AB", "id": "c:44238", "label": "c:44238", "shape": "dot", "title": "Company name: AvaLAN Wireless Systems | Number of funders: 1 | Category: mobile"}, {"color": "#1074AB", "id": "c:23647", "label": "c:23647", "shape": "dot", "title": "Company name: TekLinks | Number of funders: 1 | Category: enterprise"}, {"color": "#1074AB", "id": "c:55045", "label": "c:55045", "shape": "dot", "title": "Company name: ContinuumRx | Number of funders: 1 | Category: biotech"}, {"color": "#1074AB", "id": "c:19060", "label": "c:19060", "shape": "dot", "title": "Company name: TicketBiscuit | Number of funders: 1 | Category: software"}, {"color": "#1074AB", "id": "c:71863", "label": "c:71863", "shape": "dot", "title": "Company name: InteRNA Technologies | Number of funders: 1 | Category: biotech"}, {"color": "#1074AB", "id": "c:75100", "label": "c:75100", "shape": "dot", "title": "Company name: Digium | Number of funders: 9 | Category: public_relations"}, {"color": "#1074AB", "id": "c:153852", "label": "c:153852", "shape": "dot", "title": "Company name: Myfacepage | Number of funders: 1 | Category: other"}, {"color": "#1074AB", "id": "c:166707", "label": "c:166707", "shape": "dot", "title": "Company name: Mitsui \u0026 Co | Number of funders: 1 | Category: enterprise"}, {"color": "#1074AB", "id": "c:172159", "label": "c:172159", "shape": "dot", "title": "Company name: Curse | Number of funders: 4 | Category: games_video"}, {"color": "#1074AB", "id": "c:27255", "label": "c:27255", "shape": "dot", "title": "Company name: EnteGreat | Number of funders: 2 | Category: enterprise"}, {"color": "#1074AB", "id": "c:193530", "label": "c:193530", "shape": "dot", "title": "Company name: DAXKO | Number of funders: 1 | Category: software"}, {"color": "#1074AB", "id": "c:281425", "label": "c:281425", "shape": "dot", "title": "Company name: Hospicelink | Number of funders: 3 | Category: health"}, {"color": "#1074AB", "id": "c:146333", "label": "c:146333", "shape": "dot", "title": "Company name: PNP Therapeutics | Number of funders: 1 | Category: biotech"}, {"color": "#1074AB", "id": "c:257", "label": "c:257", "shape": "dot", "title": "Company name: Emergency CallWorks | Number of funders: 1 | Category: software"}, {"id": "f:177", "label": "f:177", "shape": "dot"}, {"id": "f:2858", "label": "f:2858", "shape": "dot"}, {"id": "f:737", "label": "f:737", "shape": "dot"}, {"id": "f:952", "label": "f:952", "shape": "dot"}, {"id": "f:4816", "label": "f:4816", "shape": "dot"}, {"id": "f:286", "label": "f:286", "shape": "dot"}, {"id": "f:4602", "label": "f:4602", "shape": "dot"}, {"id": "f:6760", "label": "f:6760", "shape": "dot"}, {"id": "f:7200", "label": "f:7200", "shape": "dot"}, {"id": "f:32", "label": "f:32", "shape": "dot"}, {"id": "f:7722", "label": "f:7722", "shape": "dot"}, {"id": "f:6855", "label": "f:6855", "shape": "dot"}, {"id": "f:316", "label": "f:316", "shape": "dot"}, {"id": "f:4360", "label": "f:4360", "shape": "dot"}, {"id": "f:6052", "label": "f:6052", "shape": "dot"}, {"id": "f:725", "label": "f:725", "shape": "dot"}, {"id": "f:10710", "label": "f:10710", "shape": "dot"}, {"id": "f:10711", "label": "f:10711", "shape": "dot"}, {"id": "f:10841", "label": "f:10841", "shape": "dot"}, {"id": "f:1834", "label": "f:1834", "shape": "dot"}, {"id": "f:5535", "label": "f:5535", "shape": "dot"}, {"id": "c:146332", "label": "c:146332", "shape": "dot"}, {"id": "c:26555", "label": "c:26555", "shape": "dot"}, {"id": "p:48334", "label": "p:48334", "shape": "dot"}, {"id": "p:1983", "label": "p:1983", "shape": "dot"}, {"id": "p:93286", "label": "p:93286", "shape": "dot"}, {"id": "p:93287", "label": "p:93287", "shape": "dot"}, {"id": "p:93288", "label": "p:93288", "shape": "dot"}, {"id": "p:93289", "label": "p:93289", "shape": "dot"}, {"id": "p:37297", "label": "p:37297", "shape": "dot"}, {"id": "p:45950", "label": "p:45950", "shape": "dot"}, {"id": "p:5529", "label": "p:5529", "shape": "dot"}]);
+        edges = new vis.DataSet([{"from": "c:271", "to": "f:177"}, {"from": "c:27941", "to": "f:2858"}, {"from": "c:271", "to": "f:737"}, {"from": "c:271", "to": "f:952"}, {"from": "c:44238", "to": "f:4816"}, {"from": "c:23647", "to": "f:286"}, {"from": "c:55045", "to": "f:4602"}, {"from": "c:19060", "to": "f:6760"}, {"from": "c:71863", "to": "f:7200"}, {"from": "c:75100", "to": "f:32"}, {"from": "c:153852", "to": "f:7722"}, {"from": "c:166707", "to": "f:6855"}, {"from": "c:75100", "to": "f:316"}, {"from": "c:172159", "to": "f:4360"}, {"from": "c:172159", "to": "f:6052"}, {"from": "c:172159", "to": "f:725"}, {"from": "c:27255", "to": "f:10710"}, {"from": "c:27255", "to": "f:10711"}, {"from": "c:193530", "to": "f:10841"}, {"from": "c:281425", "to": "f:1834"}, {"from": "c:281425", "to": "f:725"}, {"from": "c:281425", "to": "f:5535"}, {"from": "c:146333", "to": "c:146332"}, {"from": "c:172159", "to": "c:26555"}, {"from": "c:271", "to": "p:48334"}, {"from": "c:257", "to": "p:1983"}, {"from": "c:75100", "to": "p:93286"}, {"from": "c:75100", "to": "p:93287"}, {"from": "c:75100", "to": "p:93288"}, {"from": "c:75100", "to": "p:93289"}, {"from": "c:75100", "to": "p:37297"}, {"from": "c:75100", "to": "p:45950"}, {"from": "c:75100", "to": "p:5529"}]);
+
+        // adding nodes and edges to the graph
+        data = {nodes: nodes, edges: edges};
+
+        var options = {
+    "configure": {
+        "enabled": true,
+        "filter": [
+            "physics"
+        ]
+    },
+    "edges": {
+        "color": {
+            "inherit": true
+        },
+        "smooth": {
+            "enabled": false,
+            "type": "continuous"
+        }
+    },
+    "interaction": {
+        "dragNodes": true,
+        "hideEdgesOnDrag": false,
+        "hideNodesOnDrag": false
+    },
+    "physics": {
+        "enabled": true,
+        "stabilization": {
+            "enabled": true,
+            "fit": true,
+            "iterations": 1000,
+            "onlyDynamicEdges": false,
+            "updateInterval": 50
+        }
+    }
+};
+        
+        
+
+        
+        // if this network requires displaying the configure window,
+        // put it in its div
+        options.configure["container"] = document.getElementById("config");
+        
+
+        network = new vis.Network(container, data, options);
+
+        
+
+
+        
+
+        return network;
+
+    }
+
+    drawGraph();
+
+</script>
+</body>
+</html>
