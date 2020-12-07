@@ -6,7 +6,10 @@ Testing on the first 500 rows.
 import pandas as pd 
 import networkx as nx 
 import plotly.graph_objects as go 
-import time
+
+##########################################################################
+# Define companies
+##########################################################################
 
 class Company:
     def __init__(self, object_id, name, category, status, founding_date, funding_total_usd):
@@ -38,32 +41,6 @@ class Company:
     def get_funding_total_usd(self):
         return self.funding_total_usd
 
-class Fund:
-    def __init__(self, object_id, name, funding_date, raised_amount, raised_currency_code):
-        self.object_id = object_id
-        self.name = name 
-        self.funding_date = funding_date
-        self.raised_amount = raised_amount
-        self.raised_currency_code = raised_currency_code
-
-    def __str__(self):
-	    return self.object_id, self.name
-	
-    def get_object_id(self):
-	    return self.object_id
-
-    def get_name(self):
-        return self.name
-
-    def get_funding_date(self):
-        return self.funding_date
-        
-    def get_raised_amount(self):
-        return self.raised_amount
-
-    def get_raised_currency_code(self):
-        return self.raised_currency_code
-
 def filter_by_state(acquisitions, offices, state_code):
 	state_offices = offices[offices.state_code == state_code].object_id
 	acquisitions = acquisitions.dropna()
@@ -83,7 +60,11 @@ def get_company(df, object_id):
     row = df[df["id"] == object_id]
     row = row.reset_index()
     return row_to_company(row)
-        
+
+##########################################################################
+# Graph
+##########################################################################
+
 class VisualGraph(nx.Graph):
     def update_node_positions(self):
         """
@@ -110,7 +91,6 @@ class VisualGraph(nx.Graph):
         edge_x, edge_y = [], []
         edge_text = []
         for edge in self.edges():
-            print("Adding text for edge", self.edge_hover_text(edge))
             edge_text.append(self.edge_hover_text(edge))
             x0, y0 = self.nodes[edge[0]]["pos"]
             x1, y1 = self.nodes[edge[1]]["pos"]
@@ -143,7 +123,7 @@ class VisualGraph(nx.Graph):
 			hoverinfo = "text",
 			marker = dict(
 				showscale = True,
-				colorscale = "YlOrRd",
+				colorscale = "Blues",
 				reversescale = False,
 				color = [],
 				size = 10,
@@ -197,24 +177,24 @@ def graph_from_df(edgelist_df, node_df, source, target, attr=None):
     return G
 
 ##########################################################################
-# Testing
+# Execution
 ##########################################################################
 
 def main():
-    start = time.time()
 
     acquisitions = pd.read_csv("data/acquisitions.csv")
     offices = pd.read_csv("data/offices.csv")
-
-    acquisitions = filter_by_state(acquisitions, offices, "WA")
     objects = pd.read_csv("data/objects.csv", low_memory=False)
-    
-    G = graph_from_df(edgelist_df=acquisitions, node_df=objects, source="acquired_object_id", 
-		target="acquiring_object_id", attr=["price_amount", "price_currency_code", "acquired_at"])
 
-    fig = G.get_fig("<br>Acquisitions for Washington State-Based Companies")
-    fig.write_html("WA_acquisitions.html")
+    states = ["WA", "CA", "WY", "AL"]
 
-    print("Execution time:", str(time.time() - start), "seconds")
+    for state in states:
+        acquisitions = filter_by_state(acquisitions, offices, state)
+        
+        G = graph_from_df(edgelist_df=acquisitions, node_df=objects, source="acquired_object_id", 
+            target="acquiring_object_id", attr=["price_amount", "price_currency_code", "acquired_at"])
+
+        fig = G.get_fig("<br>Acquisitions of {} Companies".format(state))
+        fig.write_html("acquired_{}.html".format(state))
 
 main()
